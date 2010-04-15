@@ -1,58 +1,99 @@
 (ns clansi)
 
-(def ANSI-CODES {
-:reset "[0m"
-:bright "[1m"
-:faint "[2m"
-:blink-slow "[5m"
-:italics "[3m" 
-:underline "[4m"
-:inverse   "[7m"
-:strikethrough "[9m"
-:italics-off "[23m"
-:underline-off "[24m"
-:inverse-off "[27m"
-:strikethrough-off "[29m"
-:foreground-black "[30m"
-:foreground-red "[31m"
-:foreground-green "[32m"
-:foreground-yellow "[33m"
-:foreground-blue "[34m"
-:foreground-magenta "[35m"
-:foreground-cyan "[36m"
-:foreground-white "[37m"
-:foreground-default "[39m"
-:background-black "[40m"
-:background-red "[41m"
-:background-green "[42m"
-:background-yellow "[43m"
-:background-blue "[44m"
-:background-magenta "[45m"
-:background-cyan "[46m"
-:background-white "[47m"
-:background-default "[49m"})
+(def ANSI-CODES
+  {:reset              "[0m"
+   :bright             "[1m"
+   :blink-slow         "[5m"
+   :underline          "[4m"
+   :underline-off      "[24m"
+   :inverse            "[7m"
+   :inverse-off        "[27m"
+   :strikethrough      "[9m"
+   :strikethrough-off  "[29m"
 
-(defn ansi [code]
+   :default "[39m"
+   :white   "[37m"
+   :black   "[30m"
+   :red     "[31m"
+   :green   "[32m"
+   :blue    "[34m"
+   :yellow  "[33m"
+   :magenta "[35m"
+   :cyan    "[36m"
+
+   :bg-default "[49m"
+   :bg-white   "[47m"
+   :bg-black   "[40m"
+   :bg-red     "[41m"
+   :bg-green   "[42m"
+   :bg-blue    "[44m"
+   :bg-yellow  "[43m"
+   :bg-magenta "[45m"
+   :bg-cyan    "[46m"
+   })
+
+
+
+(defn ansi
+  "Output an ANSI escape code.
+
+   (ansi :blue)
+   (ansi :underline)
+  "
+  [code]
   (str \u001b (get ANSI-CODES code)))
 
-(defn style [s & codes]
-  (str (apply str (map ansi codes)) s (ansi :reset)))
+(defn style
+  "Applies ANSI color and style to a text string.
 
-;(style "foo" :red :b-black)
+   (style \"foo\" :red)
+   (style \"foo\" :red :underline)
+   (style \"foo\" :red :bg-blue :underline)
+ "
+  [s & codes]
+  (str (apply str (map ansi codes)) s (ansi :reset)))
 
 (defn style-test-page []
   (doall
     (map #(println (style (name %) %)) (sort-by name (keys ANSI-CODES))))
   nil)
 
-(defn print-color-doc [v]
-  (println (style "-------------------------" :foreground-blue))
-  (println (style (str (ns-name (:ns (meta v))) "/" (:name (meta v))) :blink-slow :foreground-black))
-  (println (style (:arglists (meta v)) :foreground-cyan))
+(def doc-style* (ref {:line  :blue
+                      :title :bright
+                      :args  :red
+                      :macro :blue
+                      :doc   :green}))
+
+(defn print-special-doc-color
+  [name type anchor]
+  (println (style "-------------------------" (:line @doc-style*)))
+  (println (style name (:title @doc-style*)))
+  (println type)
+  (println (style (str "  Please see http://clojure.org/special_forms#" anchor)
+                  (:doc @doc-style*))))
+
+(defn print-namespace-doc-color
+  "Print the documentation string of a Namespace."
+  [nspace]
+  (println (style "-------------------------"    (:line @doc-style*)))
+  (println (style (str (ns-name nspace))         (:title @doc-style*)))
+  (println (style (str " " (:doc (meta nspace))) (:doc @doc-style*))))
+
+(defn print-doc-color [v]
+  (println (style "-------------------------" (:line @doc-style*)))
+  (println (style (str (ns-name (:ns (meta v))) "/" (:name (meta v)))
+                  (:title @doc-style*)))
+  (print "(")
+  (doseq [alist (:arglists (meta v))]
+   (print "[" (style (apply str (interpose " " alist)) (:args @doc-style*)) "]"))
+  (println ")")
+
   (when (:macro (meta v))
-    (println (style "Macro" :strikethrough)))
-  (println " " (style (:doc (meta v)) :foreground-green)))
+    (println (style "Macro" (:macro @doc-style*))))
+  (println "  " (style (:doc (meta v)) (:doc @doc-style*))))
 
 (defmacro color-doc [v]
-  `(binding [print-doc print-color-doc]
+  `(binding [print-doc print-doc-color
+             print-special-doc print-special-doc-color
+             print-namespace-doc print-namespace-doc-color]
      (doc ~v)))
