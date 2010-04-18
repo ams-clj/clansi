@@ -41,7 +41,7 @@
   Note, try (style-test-page) to see all available styles.
   "
   [code]
-  (str \u001b (get ANSI-CODES code)))
+  (str \u001b (get ANSI-CODES code (:reset ANSI-CODES))))
 
 (defn style
   "Applies ANSI color and style to a text string.
