@@ -1,8 +1,8 @@
 ANSI color and style codes.
 
-(style "foo bar" :foreground-red)
+(style "foo bar" :red)
 
 (style "foo bar" :underline)
 
-(style "foo bar" :foreground-blue :background-red :underline)
+(style "foo bar" :blue :bg-red :underline)
 
