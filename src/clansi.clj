@@ -53,7 +53,7 @@
   [s & codes]
   (str (apply str (map ansi codes)) s (ansi :reset)))
 
-(defn style-test-page 
+(defn style-test-page
   "Print the list of supported ANSI styles, each style name shown
   with its own style."
   []
@@ -83,7 +83,7 @@
   (println (style (str (ns-name nspace))         (:title @doc-style*)))
   (println (style (str " " (:doc (meta nspace))) (:doc @doc-style*))))
 
-(defn print-doc-color 
+(defn print-doc-color
   "Print stylized function documentation."
   [v]
   (println (style "-------------------------" (:line @doc-style*)))
@@ -98,10 +98,16 @@
     (println (style "Macro" (:macro @doc-style*))))
   (println "  " (style (:doc (meta v)) (:doc @doc-style*))))
 
-(defmacro color-doc 
+(defmacro color-doc
   "A stylized version of clojure.core/doc."
   [v]
   `(binding [print-doc print-doc-color
              print-special-doc print-special-doc-color
              print-namespace-doc print-namespace-doc-color]
      (doc ~v)))
+
+(defn colorize-docs []
+  (in-ns 'clojure.core)
+  (def print-doc clansi/print-doc-color)
+  (def print-special-doc clansi/print-special-doc-color)
+  (def print-namespace-doc clansi/print-namespace-doc-color))
