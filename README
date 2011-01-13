@@ -1,8 +1,17 @@
-ANSI color and style codes.
+== CLANSI ==
+
+Some ANSI text output helper functions for Clojure terminal programs.
+
+Wrap strings in ANSI color and style codes like this:
 
 (style "foo bar" :red)
 
 (style "foo bar" :underline)
 
 (style "foo bar" :blue :bg-red :underline)
+
+=== Bonus Features: ===
+
+* call (clansi/colorize-docs) to make doc colorized
+* also supplies the color-doc macro, a stylized version of doc
 
