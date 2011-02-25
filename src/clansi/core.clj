@@ -1,4 +1,4 @@
-(ns clansi)
+(ns clansi.core)
 
 (def ANSI-CODES
   {:reset              "[0m"
