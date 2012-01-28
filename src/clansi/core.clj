@@ -53,18 +53,18 @@
   [s & codes]
   (str (apply str (map ansi codes)) s (ansi :reset)))
 
-(defn wrap-style 
+(defn wrap-style
   "Wraps a base string with a stylized wrapper.
   If the wrapper is a string it will be placed on both sides of the base,
   and if it is a seq the first and second items will wrap the base.
-  
+
   To wrap debug with red brackets => [debug]:
 
   (wrap-style \"debug\" [\"[\" \"]\"] :red)
   "
-  [base wrapper & styles] 
-  (str (apply style wrapper styles) 
-       base 
+  [base wrapper & styles]
+  (str (apply style wrapper styles)
+       base
        (apply style wrapper styles)))
 
 (defn style-test-page
