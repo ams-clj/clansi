@@ -1,4 +1,5 @@
-== CLANSI ==
+CLANSI
+------
 
 Some ANSI text output helper functions for Clojure terminal programs.
 
@@ -26,7 +27,8 @@ off as desired for each output device:
     (binding [use-ansi false] (print-colorized)) ;; prints plain "foo bar", without any ANSI color codes
 
 
-=== Bonus Features: ===
+Bonus Features
+---------------
 
 * call (clansi/colorize-docs) to make doc colorized
 * also supplies the color-doc macro, a stylized version of doc
