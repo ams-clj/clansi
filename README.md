@@ -16,9 +16,10 @@ Wrap strings in ANSI color and style codes like this:
 
 
 You can turn the production of ANSI codes on or off by rebinding the
-clansi.core/use-ansi at runtime. This allows you to maintain only 
-colorized, marked up version of your code, and then turn ANSI on or
-off as desired for each output device, execution context, etc.
+`clansi.core/use-ansi` variable at runtime. This allows you to
+maintain only colorized, marked up version of your code, and then turn
+ANSI on or off as desired for each output device, execution context,
+etc.
 
 `(without-ansi)` and `(with-ansi)` convenience macros are provided for
 this purpose:
