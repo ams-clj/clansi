@@ -32,6 +32,9 @@
    :bg-cyan    "[46m"
    })
 
+
+(def ^:dynamic use-ansi "Rebind this to false if you don't want to see ANSI codes in some part of your code." true)
+
 (defn ansi
   "Output an ANSI escape code using a style key.
 
@@ -39,9 +42,16 @@
    (ansi :underline)
 
   Note, try (style-test-page) to see all available styles.
+
+  If use-ansi is bound to false, outputs an empty string instead of an
+  ANSI code. You can use this to temporarily or permanently turn off
+  ANSI color in some part of your program, while maintaining only 1
+  version of your marked-up text.
   "
   [code]
-  (str \u001b (get ANSI-CODES code (:reset ANSI-CODES))))
+  (if use-ansi
+    (str \u001b (get ANSI-CODES code (:reset ANSI-CODES)))
+    ""))
 
 (defn style
   "Applies ANSI color and style to a text string.
