@@ -53,6 +53,23 @@
     (str \u001b (get ANSI-CODES code (:reset ANSI-CODES)))
     ""))
 
+(defmacro without-ansi 
+  "Runs the given code with the use-ansi variable temporarily bound to
+  false, to suppress the production of any ANSI color codes specified
+  in the code."
+  [& code]
+  `(binding [use-ansi false]
+     ~@code))
+
+(defmacro with-ansi 
+  "Runs the given code with the use-ansi variable temporarily bound to
+  true, to enable the production of any ANSI color codes specified in
+  the code."
+  [& code]
+  `(binding [use-ansi true]
+     ~@code))
+
+
 (defn style
   "Applies ANSI color and style to a text string.
 
