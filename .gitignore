@@ -1,4 +1,5 @@
 *~
 .lein-env
 target
+pom.xml
 
