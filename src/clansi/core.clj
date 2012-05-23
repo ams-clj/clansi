@@ -33,7 +33,7 @@
    })
 
 
-(def ^:dynamic use-ansi "Rebind this to false if you don't want to see ANSI codes in some part of your code." true)
+(def ^:dynamic *use-ansi* "Rebind this to false if you don't want to see ANSI codes in some part of your code." true)
 
 (defn ansi
   "Output an ANSI escape code using a style key.
@@ -43,30 +43,30 @@
 
   Note, try (style-test-page) to see all available styles.
 
-  If use-ansi is bound to false, outputs an empty string instead of an
+  If *use-ansi* is bound to false, outputs an empty string instead of an
   ANSI code. You can use this to temporarily or permanently turn off
   ANSI color in some part of your program, while maintaining only 1
   version of your marked-up text.
   "
   [code]
-  (if use-ansi
+  (if *use-ansi*
     (str \u001b (get ANSI-CODES code (:reset ANSI-CODES)))
     ""))
 
-(defmacro without-ansi 
+(defmacro without-ansi
   "Runs the given code with the use-ansi variable temporarily bound to
   false, to suppress the production of any ANSI color codes specified
   in the code."
   [& code]
-  `(binding [use-ansi false]
+  `(binding [*use-ansi* false]
      ~@code))
 
-(defmacro with-ansi 
+(defmacro with-ansi
   "Runs the given code with the use-ansi variable temporarily bound to
   true, to enable the production of any ANSI color codes specified in
   the code."
   [& code]
-  `(binding [use-ansi true]
+  `(binding [*use-ansi* true]
      ~@code))
 
 
@@ -80,18 +80,18 @@
   [s & codes]
   (str (apply str (map ansi codes)) s (ansi :reset)))
 
-(defn wrap-style 
+(defn wrap-style
   "Wraps a base string with a stylized wrapper.
   If the wrapper is a string it will be placed on both sides of the base,
   and if it is a seq the first and second items will wrap the base.
-  
+
   To wrap debug with red brackets => [debug]:
 
   (wrap-style \"debug\" [\"[\" \"]\"] :red)
   "
-  [base wrapper & styles] 
-  (str (apply style wrapper styles) 
-       base 
+  [base wrapper & styles]
+  (str (apply style wrapper styles)
+       base
        (apply style wrapper styles)))
 
 (defn style-test-page
