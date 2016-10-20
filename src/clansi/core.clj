@@ -1,4 +1,5 @@
-(ns clansi.core)
+(ns clansi.core
+  (:require [clojure.string :as s]))
 
 (def ANSI-CODES
   {:reset              "[0m"
@@ -53,6 +54,11 @@
     (str \u001b (get ANSI-CODES code (:reset ANSI-CODES)))
     ""))
 
+(defn strip
+  "Removes all ANSI escape codes from the text."
+  [s]
+  (s/replace s #"\u001b\[\d+m" ""))
+
 (defmacro without-ansi
   "Runs the given code with the use-ansi variable temporarily bound to
   false, to suppress the production of any ANSI color codes specified
@@ -68,7 +74,6 @@
   [& code]
   `(binding [*use-ansi* true]
      ~@code))
-
 
 (defn style
   "Applies ANSI color and style to a text string.
